@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jemstat Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--green:#1a7a3a;--green2:#25a84e;--green3:#e6f7ec;--gold:#f39c12;--dark:#0d1f10;--text:#1a2e1c;--muted:#5a7060;--red:#e74c3c;}
+body{font-family:'Nunito',sans-serif;background:#f0f4f1;color:var(--text);}
+header{background:var(--green);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+header h1{font-family:'Bangers',cursive;font-size:1.6rem;color:#fff;letter-spacing:1px;}
+header a{color:#a8e6be;font-size:0.85rem;font-weight:700;text-decoration:none;}
+header a:hover{color:#fff;}
+.container{max-width:960px;margin:0 auto;padding:24px 20px;}
+
+/* STAT CARDS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px;}
+.stat-card{background:#fff;border-radius:14px;padding:20px;border:1.5px solid #d4e8d6;}
+.stat-label{font-size:0.78rem;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.stat-value{font-family:'Bangers',cursive;font-size:2.2rem;color:var(--green);letter-spacing:1px;}
+.stat-sub{font-size:0.78rem;color:var(--muted);margin-top:2px;}
+
+/* ORDERS TABLE */
+.table-wrap{background:#fff;border-radius:14px;border:1.5px solid #d4e8d6;overflow:hidden;}
+.table-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid #e0ece1;}
+.table-header h2{font-family:'Bangers',cursive;font-size:1.4rem;color:var(--green);letter-spacing:1px;}
+.refresh-btn{padding:7px 16px;border-radius:20px;background:var(--green3);color:var(--green);font-weight:700;font-size:0.82rem;border:none;cursor:pointer;}
+table{width:100%;border-collapse:collapse;}
+th{background:#f7faf7;padding:11px 16px;text-align:left;font-size:0.78rem;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;border-bottom:1.5px solid #e0ece1;}
+td{padding:12px 16px;font-size:0.88rem;border-bottom:1px solid #f0f4f1;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f7faf7;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:800;}
+.badge.confirmed{background:#d4edda;color:#155724;}
+.badge.pending{background:#fff3cd;color:#856404;}
+.badge.failed{background:#f8d7da;color:#721c24;}
+.order-ref{font-family:monospace;font-size:0.82rem;color:var(--green);font-weight:700;}
+.mpesa-code{font-family:monospace;font-size:0.78rem;color:var(--muted);}
+.amount{font-family:'Bangers',cursive;font-size:1.1rem;color:var(--green);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-state .icon{font-size:2.5rem;margin-bottom:10px;}
+
+/* LIVE INDICATOR */
+.live-dot{width:8px;height:8px;background:#25a84e;border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🛡️ Jemstat Admin</h1>
+    <div style="color:#a8e6be;font-size:0.75rem;margin-top:2px;"><span class="live-dot"></span>Live Dashboard</div>
+  </div>
+  <div style="display:flex;gap:16px;align-items:center;">
+    <a href="/">← View Website</a>
+    <a href="/admin/logout">Logout</a>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Orders</div>
+      <div class="stat-value">{{ total_orders }}</div>
+      <div class="stat-sub">Confirmed orders</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-value">Ksh {{ total_revenue }}</div>
+      <div class="stat-sub">Simulated earnings</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value" style="color:{% if pending_count > 0 %}#f39c12{% else %}var(--green){% endif %}">{{ pending_count }}</div>
+      <div class="stat-sub">Awaiting payment</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Status</div>
+      <div class="stat-value" style="font-size:1.4rem;padding-top:4px;">🟢 Online</div>
+      <div class="stat-sub">Server running</div>
+    </div>
+  </div>
+
+  <!-- ORDERS TABLE -->
+  <div class="table-wrap">
+    <div class="table-header">
+      <h2>All Orders</h2>
+      <button class="refresh-btn" onclick="location.reload()">🔄 Refresh</button>
+    </div>
+
+    {% if orders %}
+    <table>
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Phone</th>
+          <th>Bundle</th>
+          <th>Amount</th>
+          <th>M-Pesa Code</th>
+          <th>Status</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td><span class="order-ref">{{ order['order_ref'] }}</span></td>
+          <td>{{ order['phone'] }}</td>
+          <td>
+            <strong>{{ order['bundle_size'] }}</strong><br>
+            <span style="font-size:0.75rem;color:var(--muted);">{{ order['validity'] }}</span>
+          </td>
+          <td><span class="amount">Ksh {{ order['amount'] }}</span></td>
+          <td><span class="mpesa-code">{{ order['mpesa_code'] or '—' }}</span></td>
+          <td>
+            <span class="badge {{ order['status'] }}">{{ order['status'].upper() }}</span>
+          </td>
+          <td style="font-size:0.78rem;color:var(--muted);">{{ order['created_at'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">📭</div>
+      <p style="font-weight:700;">No orders yet</p>
+      <p style="font-size:0.85rem;margin-top:4px;">Orders will appear here once customers start buying bundles.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<script>
+  // Auto-refresh every 30 seconds so you see new orders
+  setTimeout(() => location.reload(), 30000);
+</script>
+</body>
+</html>

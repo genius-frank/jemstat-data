@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Login — Jemstat Data</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#1a7a3a,#145229);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;border-radius:20px;padding:36px 32px;max-width:360px;width:100%;text-align:center;}
+.lock{font-size:2.5rem;margin-bottom:12px;}
+h1{font-family:'Bangers',cursive;font-size:1.8rem;color:#1a7a3a;letter-spacing:1px;margin-bottom:4px;}
+p{font-size:0.85rem;color:#5a7060;margin-bottom:24px;}
+input{width:100%;padding:12px 16px;border-radius:10px;border:1.5px solid #d4e8d6;font-family:'Nunito',sans-serif;font-size:1rem;outline:none;margin-bottom:14px;text-align:center;letter-spacing:3px;}
+input:focus{border-color:#1a7a3a;}
+button{width:100%;padding:13px;border-radius:12px;background:#1a7a3a;color:#fff;font-weight:800;font-size:1rem;border:none;cursor:pointer;}
+button:hover{background:#145229;}
+.error{background:#fdecea;color:#c0392b;border-radius:10px;padding:10px 14px;font-size:0.85rem;font-weight:700;margin-bottom:14px;}
+.back{display:block;margin-top:16px;font-size:0.82rem;color:#5a7060;text-decoration:none;}
+.back:hover{color:#1a7a3a;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="lock">🔐</div>
+  <h1>Admin Login</h1>
+  <p>Jemstat Data Dashboard — Owner Only</p>
+  {% if error %}
+  <div class="error">{{ error }}</div>
+  {% endif %}
+  <form method="POST">
+    <input type="password" name="password" placeholder="Enter password" autofocus/>
+    <button type="submit">Login →</button>
+  </form>
+  <a href="/" class="back">← Back to website</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jemstat Data — Fast Bundles ChapChap</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --green:#1a7a3a;--green2:#25a84e;--green3:#e6f7ec;
+  --red2:#e74c3c;--gold:#f39c12;--white:#fff;
+  --offwhite:#f7f9f7;--dark:#0d1f10;--text:#1a2e1c;--muted:#5a7060;
+  --radius:14px;
+}
+body{font-family:'Nunito',sans-serif;background:var(--offwhite);color:var(--text);}
+
+/* NAV */
+nav{background:var(--green);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px #0004;}
+.logo-text{color:#fff;font-family:'Bangers',cursive;font-size:1.5rem;letter-spacing:1px;}
+.logo-sub{color:#a8e6be;font-size:0.68rem;font-weight:700;letter-spacing:2px;}
+nav ul{list-style:none;display:flex;gap:6px;}
+nav ul li a{color:#c8f0d8;font-size:0.85rem;font-weight:700;padding:6px 14px;border-radius:20px;text-decoration:none;cursor:pointer;}
+nav ul li a:hover{background:#ffffff22;color:#fff;}
+.nav-buy{background:var(--gold)!important;color:var(--dark)!important;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a7a3a,#145229);padding:44px 20px 0;position:relative;overflow:hidden;min-height:300px;}
+.hero-content{max-width:680px;margin:0 auto;position:relative;z-index:2;}
+.hero-badge{display:inline-block;background:var(--red2);color:#fff;font-size:0.72rem;font-weight:800;letter-spacing:2px;padding:4px 14px;border-radius:20px;margin-bottom:12px;}
+.hero h1{font-family:'Bangers',cursive;font-size:3rem;color:#fff;letter-spacing:2px;margin-bottom:8px;}
+.hero h1 span{color:var(--gold);}
+.hero-sub{color:#b8e8cc;font-size:1rem;font-weight:600;margin-bottom:22px;}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px;}
+.btn-gold{background:var(--gold);color:var(--dark);font-weight:800;font-size:1rem;padding:12px 28px;border-radius:30px;border:none;cursor:pointer;text-decoration:none;display:inline-block;}
+.btn-outline{background:transparent;color:#fff;font-weight:700;font-size:0.95rem;padding:11px 24px;border-radius:30px;border:2px solid #ffffff55;text-decoration:none;display:inline-block;}
+.hero-stats{display:flex;gap:24px;}
+.hero-stat .num{font-family:'Bangers',cursive;font-size:2rem;color:#fff;}
+.hero-stat .lbl{font-size:0.72rem;color:#9dddb4;font-weight:700;letter-spacing:1px;}
+.hero-wave{position:absolute;bottom:0;left:0;width:100%;line-height:0;}
+
+/* SECTIONS */
+section{padding:36px 20px;}
+.section-title{text-align:center;margin-bottom:28px;}
+.section-title h2{font-family:'Bangers',cursive;font-size:2rem;color:var(--green);letter-spacing:1px;}
+.section-title p{color:var(--muted);font-size:0.92rem;margin-top:4px;}
+
+/* TABS */
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+.tab{padding:8px 22px;border-radius:22px;border:2px solid var(--green);color:var(--green);font-weight:700;font-size:0.85rem;cursor:pointer;background:transparent;transition:all .2s;}
+.tab.active,.tab:hover{background:var(--green);color:#fff;}
+
+/* BUNDLE CARDS */
+.bundle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;max-width:680px;margin:0 auto;}
+.bundle-card{background:#fff;border-radius:var(--radius);border:1.5px solid #d4e8d6;padding:18px 14px;text-align:center;position:relative;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.bundle-card:hover{transform:translateY(-4px);box-shadow:0 10px 28px #1a7a3a18;}
+.bundle-card.popular{border-color:var(--green);border-width:2.5px;}
+.popular-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--red2);color:#fff;font-size:0.68rem;font-weight:800;padding:3px 12px;border-radius:12px;white-space:nowrap;}
+.bundle-price{font-family:'Bangers',cursive;font-size:2.2rem;color:var(--green);}
+.bundle-price small{font-size:1rem;color:var(--muted);font-family:'Nunito',sans-serif;font-weight:700;}
+.bundle-data{font-size:1.2rem;font-weight:800;margin:4px 0;}
+.bundle-validity{font-size:0.78rem;color:var(--muted);font-weight:600;margin-bottom:12px;}
+.bundle-btn{width:100%;padding:9px;border-radius:10px;background:var(--green3);color:var(--green);font-weight:800;font-size:0.85rem;border:none;cursor:pointer;transition:background .2s;}
+.bundle-card.popular .bundle-btn{background:var(--green);color:#fff;}
+.bundle-btn:hover{background:var(--green);color:#fff;}
+.panel{display:none;} .panel.active{display:block;}
+
+/* HOW TO BUY */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;max-width:680px;margin:0 auto;}
+.step-card{background:#fff;border-radius:var(--radius);padding:20px 14px;text-align:center;border:1.5px solid #e0ece1;}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--green);color:#fff;font-family:'Bangers',cursive;font-size:1.4rem;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+.step-title{font-weight:800;font-size:0.88rem;margin-bottom:4px;}
+.step-desc{font-size:0.78rem;color:var(--muted);}
+
+/* CONTACT */
+.contact-bar{background:var(--green);color:#fff;padding:22px 20px;text-align:center;}
+.contact-bar h3{font-family:'Bangers',cursive;font-size:1.6rem;letter-spacing:1px;margin-bottom:10px;}
+.contact-numbers{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:6px;}
+.contact-numbers a{color:var(--gold);font-weight:800;text-decoration:none;background:#ffffff15;padding:8px 18px;border-radius:22px;}
+.contact-bar p{font-size:0.85rem;opacity:.8;margin-top:6px;}
+
+footer{background:var(--dark);color:#a8d8b0;text-align:center;padding:16px 20px;font-size:0.8rem;}
+footer span{color:var(--green2);}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:999;align-items:center;justify-content:center;padding:20px;}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:18px;padding:28px 24px;max-width:400px;width:100%;position:relative;max-height:90vh;overflow-y:auto;animation:pop .25s ease;}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);}
+.modal h3{font-family:'Bangers',cursive;font-size:1.7rem;color:var(--green);letter-spacing:1px;margin-bottom:6px;}
+.selected-info{background:var(--green3);border-radius:10px;padding:12px 16px;margin:14px 0;display:flex;justify-content:space-between;align-items:center;}
+.selected-info .s-data{font-weight:800;font-size:1rem;}
+.selected-info .s-price{font-family:'Bangers',cursive;font-size:1.6rem;color:var(--green);}
+.modal label{font-size:0.83rem;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;margin-top:10px;}
+.modal input{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d4e8d6;font-family:'Nunito',sans-serif;font-size:0.95rem;outline:none;}
+.modal input:focus{border-color:var(--green);}
+.till-box{background:var(--green);color:#fff;border-radius:10px;padding:10px 14px;text-align:center;margin:14px 0;}
+.till-box .tl{font-size:0.72rem;font-weight:700;letter-spacing:1px;opacity:.8;}
+.till-box .tn{font-family:'Bangers',cursive;font-size:2rem;letter-spacing:3px;}
+.mpesa-steps{background:#f0fff5;border-radius:10px;padding:12px 14px;margin-bottom:14px;}
+.mpesa-steps p{font-size:0.78rem;color:var(--green);font-weight:700;margin-bottom:6px;}
+.mpesa-steps ol{padding-left:16px;}
+.mpesa-steps li{font-size:0.76rem;color:var(--muted);margin-bottom:3px;}
+.btn-confirm{width:100%;padding:13px;border-radius:12px;background:var(--green);color:#fff;font-weight:800;font-size:1rem;border:none;cursor:pointer;margin-top:4px;}
+.btn-confirm:disabled{opacity:.6;cursor:not-allowed;}
+
+/* SUCCESS SCREEN */
+.success-screen{display:none;text-align:center;padding:10px 0;}
+.success-screen.show{display:block;}
+.success-icon{font-size:3.5rem;margin-bottom:12px;}
+.success-screen h3{font-family:'Bangers',cursive;font-size:1.8rem;color:var(--green);letter-spacing:1px;}
+.ref-box{background:var(--green3);border-radius:10px;padding:14px;margin:16px 0;}
+.ref-box .ref-label{font-size:0.75rem;color:var(--muted);font-weight:700;}
+.ref-box .ref-num{font-family:'Bangers',cursive;font-size:1.6rem;color:var(--green);letter-spacing:2px;}
+.ref-box .mpesa-code{font-size:0.85rem;font-weight:700;color:var(--text);margin-top:4px;}
+
+/* SPINNER */
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid #ffffff55;border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#fff;font-weight:700;padding:12px 28px;border-radius:30px;font-size:0.9rem;z-index:9999;transition:transform .3s;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* DEMO BADGE */
+.demo-banner{background:#fff3cd;border:1.5px solid #ffc107;border-radius:10px;padding:10px 16px;text-align:center;margin:12px 20px;font-size:0.85rem;font-weight:700;color:#856404;}
+</style>
+</head>
+<body>
+
+<!-- DEMO NOTICE -->
+<div class="demo-banner">
+  🛠️ Demo Mode — Payments are simulated. No real money is charged. Admin: <a href="/admin" style="color:var(--green)">Dashboard</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div>
+    <div class="logo-text">Jemstat Data</div>
+    <div class="logo-sub">Safaricom Reseller</div>
+  </div>
+  <ul>
+    <li><a onclick="switchTab('data',null)">Data</a></li>
+    <li><a onclick="switchTab('sms',null)">SMS</a></li>
+    <li><a onclick="switchTab('minutes',null)">Minutes</a></li>
+    <li><a onclick="openModal(null)" class="nav-buy">Buy Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🔥 Pata ata ukiwa na OKOA!</div>
+    <h1>Fast Data,<br><span>Chap Chap!</span></h1>
+    <p class="hero-sub">Affordable Safaricom bundles — delivered instantly to your line.</p>
+    <div class="hero-actions">
+      <a class="btn-gold" onclick="document.getElementById('bundles').scrollIntoView({behavior:'smooth'})">Buy a Bundle</a>
+      <a class="btn-outline" href="#how">How to Buy</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">24/7</div><div class="lbl">Available</div></div>
+      <div class="hero-stat"><div class="num">1min</div><div class="lbl">Delivery</div></div>
+      <div class="hero-stat"><div class="num">Ksh 5</div><div class="lbl">From</div></div>
+    </div>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 680 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" height="60">
+      <path d="M0,40 Q170,0 340,30 Q510,60 680,20 L680,60 L0,60 Z" fill="#f7f9f7"/>
+    </svg>
+  </div>
+</div>
+
+<!-- BUNDLES -->
+<section id="bundles">
+  <div class="section-title">
+    <h2>Our Bundles</h2>
+    <p>Choose data, SMS, or minutes that fit your pocket</p>
+  </div>
+  <div class="tabs">
+    <button class="tab active" id="tab-data" onclick="switchTab('data',this)">📶 Data</button>
+    <button class="tab" id="tab-sms" onclick="switchTab('sms',this)">💬 SMS</button>
+    <button class="tab" id="tab-minutes" onclick="switchTab('minutes',this)">📞 Minutes</button>
+  </div>
+
+  <!-- DATA -->
+  <div id="panel-data" class="panel active">
+    <div class="bundle-grid">
+      <div class="bundle-card" onclick="openModal({price:19,data:'1GB',validity:'1 Hour',name:'Bingwa 1GB'})">
+        <div class="bundle-price"><small>Ksh</small>19</div>
+        <div class="bundle-data">1 GB</div>
+        <div class="bundle-validity">⏱ 1 Hour</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+      <div class="bundle-card" onclick="openModal({price:20,data:'250MB',validity:'24 Hours',name:'Bingwa 250MB'})">
+        <div class="bundle-price"><small>Ksh</small>20</div>
+        <div class="bundle-data">250 MB</div>
+        <div class="bundle-validity">⏱ 24 Hours</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+      <div class="bundle-card" onclick="openModal({price:49,data:'350MB',validity:'7 Days',name:'Bingwa 350MB'})">
+        <div class="bundle-price"><small>Ksh</small>49</div>
+        <div class="bundle-data">350 MB</div>
+        <div class="bundle-validity">📅 7 Days</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+      <div class="bundle-card" onclick="openModal({price:50,data:'1.5GB',validity:'3 Hours',name:'Bingwa 1.5GB'})">
+        <div class="bundle-price"><small>Ksh</small>50</div>
+        <div class="bundle-data">1.5 GB</div>
+        <div class="bundle-validity">⏱ 3 Hours</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+      <div class="bundle-card popular" onclick="openModal({price:55,data:'1.25GB',validity:'Till Midnight',name:'Bingwa 1.25GB'})">
+        <div class="popular-badge">🔥 Best Value</div>
+        <div class="bundle-price"><small>Ksh</small>55</div>
+        <div class="bundle-data">1.25 GB</div>
+        <div class="bundle-validity">🌙 Till Midnight</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+      <div class="bundle-card" onclick="openModal({price:99,data:'1GB',validity:'24 Hours',name:'Bingwa 1GB Daily'})">
+        <div class="bundle-price"><small>Ksh</small>99</div>
+        <div class="bundle-data">1 GB</div>
+        <div class="bundle-validity">⏱ 24 Hours</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+      <div class="bundle-card" onclick="openModal({price:110,data:'2GB',validity:'24 Hours',name:'Bingwa 2GB'})">
+        <div class="bundle-price"><small>Ksh</small>110</div>
+        <div class="bundle-data">2 GB</div>
+        <div class="bundle-validity">⏱ 24 Hours</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SMS -->
+  <div id="panel-sms" class="panel">
+    <div class="bundle-grid">
+      <div class="bundle-card" onclick="openModal({price:5,data:'20 SMS',validity:'Daily',name:'SMS 20'})">
+        <div class="bundle-price"><small>Ksh</small>5</div>
+        <div class="bundle-data">20 SMS</div>
+        <div class="bundle-validity">📅 Daily</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+      <div class="bundle-card popular" onclick="openModal({price:10,data:'200 SMS',validity:'Daily',name:'SMS 200'})">
+        <div class="popular-badge">🔥 Most Popular</div>
+        <div class="bundle-price"><small>Ksh</small>10</div>
+        <div class="bundle-data">200 SMS</div>
+        <div class="bundle-validity">📅 Daily</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+      <div class="bundle-card" onclick="openModal({price:30,data:'1000 SMS',validity:'Weekly',name:'SMS 1000'})">
+        <div class="bundle-price"><small>Ksh</small>30</div>
+        <div class="bundle-data">1000 SMS</div>
+        <div class="bundle-validity">📅 Weekly</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MINUTES -->
+  <div id="panel-minutes" class="panel">
+    <div class="bundle-grid">
+      <div class="bundle-card" onclick="openModal({price:22,data:'43 Mins',validity:'3 Hours',name:'Minutes 43'})">
+        <div class="bundle-price"><small>Ksh</small>22</div>
+        <div class="bundle-data">43 Mins</div>
+        <div class="bundle-validity">⏱ 3 Hours</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+      <div class="bundle-card popular" onclick="openModal({price:51,data:'50 Mins',validity:'Till Midnight',name:'Minutes 50'})">
+        <div class="popular-badge">🔥 Best Value</div>
+        <div class="bundle-price"><small>Ksh</small>51</div>
+        <div class="bundle-data">50 Mins</div>
+        <div class="bundle-validity">🌙 Till Midnight</div>
+        <button class="bundle-btn">Buy Now</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO BUY -->
+<section id="how" style="background:#fff;border-top:1.5px solid #e0ece1;border-bottom:1.5px solid #e0ece1;">
+  <div class="section-title">
+    <h2>How to Buy</h2>
+    <p>Takes under 2 minutes via M-Pesa</p>
+  </div>
+  <div class="steps">
+    <div class="step-card"><div class="step-num">1</div><div class="step-title">Choose Bundle</div><div class="step-desc">Pick your bundle above</div></div>
+    <div class="step-card"><div class="step-num">2</div><div class="step-title">Open M-Pesa</div><div class="step-desc">Go to Lipa na M-Pesa</div></div>
+    <div class="step-card"><div class="step-num">3</div><div class="step-title">Buy Goods</div><div class="step-desc">Select Buy Goods & Services</div></div>
+    <div class="step-card"><div class="step-num">4</div><div class="step-title">Enter Till</div><div class="step-desc">Till No. shown on checkout</div></div>
+    <div class="step-card"><div class="step-num">5</div><div class="step-title">Done!</div><div class="step-desc">Bundle sent in seconds</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="contact-bar">
+  <h3>Call or WhatsApp Us</h3>
+  <div class="contact-numbers">
+    <a href="tel:+254716700852">📞 0716 700 852</a>
+    <a href="tel:+254724292415">📞 0724 292 415</a>
+  </div>
+  <p>Available daily — always here for you!</p>
+</div>
+
+<footer>
+  <p>© 2025 <span>Jemstat Data</span> · Safaricom Authorised Reseller</p>
+</footer>
+
+<!-- ORDER MODAL -->
+<div class="overlay" id="modal" onclick="closeOnOverlay(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <!-- ORDER FORM -->
+    <div id="order-form">
+      <h3>Complete Purchase</h3>
+      <p style="font-size:0.82rem;color:var(--muted)">Pay via M-Pesa and receive your bundle instantly.</p>
+      <div class="selected-info">
+        <div>
+          <div style="font-size:0.75rem;color:var(--muted);font-weight:700;">Selected Bundle</div>
+          <div class="s-data" id="modal-bundle-label">—</div>
+          <div style="font-size:0.75rem;color:var(--muted);" id="modal-validity-label">—</div>
+        </div>
+        <div class="s-price" id="modal-price-label">—</div>
+      </div>
+      <label>Your Phone Number (to receive bundle)</label>
+      <input type="tel" id="phone-input" placeholder="e.g. 0712345678" maxlength="15"/>
+      <div class="till-box">
+        <div class="tl">M-PESA TILL NUMBER</div>
+        <div class="tn">4098186</div>
+      </div>
+      <div class="mpesa-steps">
+        <p>Quick M-Pesa Steps:</p>
+        <ol>
+          <li>M-Pesa → Lipa na M-Pesa → Buy Goods</li>
+          <li>Enter Till: <strong>4098186</strong></li>
+          <li>Enter exact amount shown above</li>
+          <li>Enter PIN → Confirm</li>
+        </ol>
+      </div>
+      <button class="btn-confirm" id="confirm-btn" onclick="submitOrder()">
+        ✅ I Have Paid — Send My Bundle
+      </button>
+    </div>
+
+    <!-- SUCCESS SCREEN (shown after order) -->
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">🎉</div>
+      <h3>Bundle Confirmed!</h3>
+      <p style="color:var(--muted);font-size:0.9rem;margin-top:6px;">Your bundle has been sent to your number.</p>
+      <div class="ref-box">
+        <div class="ref-label">ORDER REFERENCE</div>
+        <div class="ref-num" id="result-ref">—</div>
+        <div class="mpesa-code" id="result-mpesa">M-Pesa Code: —</div>
+      </div>
+      <p style="font-size:0.8rem;color:var(--muted);">Save this reference for support. Bundle arrives within 1 minute.</p>
+      <button class="btn-confirm" onclick="closeModal()" style="margin-top:14px;">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Current bundle selection
+var current = {price:55, data:'1.25GB', validity:'Till Midnight', name:'Bingwa 1.25GB'};
+
+// Switch between Data / SMS / Minutes tabs
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('bundles').scrollIntoView({behavior:'smooth'});
+}
+
+// Open the purchase modal
+function openModal(bundle) {
+  if(bundle) current = bundle;
+  document.getElementById('modal-bundle-label').textContent = current.data + ' — ' + current.name;
+  document.getElementById('modal-validity-label').textContent = '⏱ ' + current.validity;
+  document.getElementById('modal-price-label').textContent = 'Ksh ' + current.price;
+  document.getElementById('order-form').style.display = 'block';
+  document.getElementById('success-screen').classList.remove('show');
+  document.getElementById('phone-input').value = '';
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+function closeOnOverlay(e) {
+  if(e.target === document.getElementById('modal')) closeModal();
+}
+
+// Submit order to Python backend
+async function submitOrder() {
+  var phone = document.getElementById('phone-input').value.trim();
+
+  // Validate phone number
+  if(!phone || phone.length < 9) {
+    showToast('⚠️ Please enter your phone number!');
+    return;
+  }
+
+  // Show loading spinner on button
+  var btn = document.getElementById('confirm-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Processing...';
+
+  try {
+    // Send order to our Python Flask backend
+    // fetch() is how JavaScript talks to a server
+    var response = await fetch('/order', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        phone: phone,
+        bundle: current.name,
+        size: current.data,
+        amount: current.price,
+        validity: current.validity
+      })
+    });
+
+    var result = await response.json();
+
+    if(result.success) {
+      // Show success screen
+      document.getElementById('order-form').style.display = 'none';
+      document.getElementById('result-ref').textContent = result.order_ref;
+      document.getElementById('result-mpesa').textContent = 'M-Pesa Code: ' + result.mpesa_code;
+      document.getElementById('success-screen').classList.add('show');
+    } else {
+      showToast('❌ Order failed: ' + result.message);
+    }
+
+  } catch(err) {
+    showToast('❌ Could not connect to server. Is Flask running?');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '✅ I Have Paid — Send My Bundle';
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
